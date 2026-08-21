@@ -39,25 +39,34 @@
 from collections import defaultdict, deque
 
 
-T = int(input())
+5
+
+
+
+
+T = 1
 # 여러개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
 for test_case in range(1, T + 1):
-    N = int(input()) 
-    arr = []
+    N = 5 
+    arr = [[0, 1, 1, 0, 0],
+        [0, 0, 1, 0, 3],
+        [0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0],
+        [1, 0, 5, 0, 0]]
     persons = []
     stairs = []
-    dist_dict = defaultdict(list) # key 
+    dist_dict_0 = defaultdict(list) # key 
+    dist_dict_1 = defaultdict(list) # key 
 
-    for _ in range(N):
-        arr.append(list(map(int, input().split())))
+    # for _ in range(N):
+    #     arr.append(list(map(int, input().split())))
 
     for ir, r in enumerate(arr) :
         for ic, c in enumerate(r) :
             if c == 1 :
-                persons.append(tuple(ir,ic))
+                persons.append((ir,ic,))
             elif c > 1 :
-                stairs.append( (tuple(ir,ic) , r,))
-
+                stairs.append( ((ir,ic,) , c,))
 
     stair_0_pos = stairs[0][0]
     stair_1_pos = stairs[1][0]
@@ -65,49 +74,136 @@ for test_case in range(1, T + 1):
     stair_0_len = stairs[0][1]
     stair_1_len = stairs[1][1]
 
-    is_0_short = stair_0_len <= stair_1_len
-    
-    in_time_0 = deque()
-    in_time_1 = deque()
+    for person in persons :
+        dist_0 = abs(stair_0_pos[0] - person[0]) + abs(stair_0_pos[1] - person[1])
+        dist_1 = abs(stair_1_pos[0] - person[0]) + abs(stair_1_pos[1] - person[1])
 
-
-    for i , v in enumerate(persons) :
-        for stair in stairs :
-            dist_dict[stair].append(tuple(abs(v[0] - stair[0][0]) + abs(v[1] - stair[0][1]), i) )
-
-
-    for k in dist_dict :
-        dist_dict[k].sort(reverse=True)
+        dist_dict_0[dist_0].append(person)
+        dist_dict_1[dist_1].append(person)
 
     elapsed_time = 0
+    curr_time = 9999999
+    in_0 = deque()
+    in_1 = deque()
+    stair_0 = 0
+    stair_1 = 0
+    print(f"curr{curr_time}, elap {elapsed_time}, ramain{persons}")
+    while persons :
+        if stair_0 == 0 :
+            min_key_0 = min(dist_dict_0.keys())
+            stair_0 = dist_dict_0[min_key_0].pop()
+            print(0)
+            if not dist_dict_0[min_key_0] :
+                del dist_dict_0[min_key_0]
 
-    while len(persons) > 0 :
-        stair_0 = dist_dict[0].pop()
-        stair_1 = dist_dict[1].pop()
+        if stair_1 == 0 :
+            min_key_1 = min(dist_dict_1.keys())
+            stair_1 = dist_dict_1[min_key_1].pop()
+            print(1)
 
-        if is_0_short :
-            while stair_0[1] + stair_0_len < stair_1[1] + stair_1_len :
-                in_time_0.append()
-            stair_0 = dist_dict[0].pop()
+            if not dist_dict_1[min_key_1] :
+                del dist_dict_1[min_key_1]
 
+        expected_out_0 = min_key_0 + 1 + stair_0_len
+        expected_out_1 = min_key_1 + 1 + stair_1_len
 
+        if expected_out_0 < expected_out_1 :
+            in_0.append((expected_out_0, stair_0, ))
+            temp_time = min_key_0
+            print("out:",stair_0, "to 0")
+            persons.remove(stair_0)
+            stair_0 = 0
+            for i in in_0 :
+                if i[0] <= elapsed_time :
+                    in_0.popleft()
+                else :
+                    break
 
+        else :
+            in_1.append((expected_out_1, stair_1, ))
+            temp_time = min_key_1
+            print("out:",stair_1, "to 1")
 
-    for i in range(len(persons)):
-        if is_0_short :
-            if star_0_in_cnt < 3 :
-                nearest_person = dist_dict[0].pop()
-            else:
-                if last_arrival_0 + 
+            persons.remove(stair_1)
+            stair_1 = 0
+
+            for i in in_1 :
+                if i[0] <= elapsed_time :
+                    in_1.popleft()
+                else :
+                    break
+
+        if temp_time > curr_time :
+            elapsed_time = curr_time + 1
+
+        curr_time = temp_time
+
+        print(f"curr{curr_time}, elap {elapsed_time}, ramain{persons}")
 
 
         
-        stair_1 = dist_dict[1].pop()
 
-        last_arrival_0 = stair_0[0]
-        last_arrival_1 = stair_1[0]
+    # latest_arrival_0 = max(dist_dict_0.keys())
+    # latest_arrival_1 = max(dist_dict_1.keys())
 
-        if is_0_short :
+    # if stair_0_len < stair_1_len:
+    #     in_active_stair = [].extend(v for j, v in dist_dict_0.items() if latest_arrival_0 - j > stair_0_len )
+    # else :
+    #     in_active_stair = [].extend(v for j, v in dist_dict_1.items() if latest_arrival_1 - j > stair_1_len )
+
+    # s
 
 
-        persons.remove(position)
+
+
+
+
+
+    
+
+'''
+거리를 계산하고 
+왼쪽 오른쪽 계단을 여기서 바로 배정을 해보자.
+
+'''
+
+
+
+
+
+
+
+    # # is_0_short = stair_0_len <= stair_1_len
+    
+    # in_time_0 = deque()
+    # in_time_1 = deque()
+
+
+    # for v in persons :
+    #     for stair in stairs :
+    #         dist_dict[stair].append(tuple(abs(v[0] - stair[0][0]) + abs(v[1] - stair[0][1]), v) )
+
+
+    # for k in dist_dict :
+    #     dist_dict[k].sort(reverse=True)
+
+    # elapsed_time = 0
+    # maxtime = 
+
+    # while len(persons) > 0 :
+    #     stair_0 = dist_dict[0].pop()
+    #     stair_1 = dist_dict[1].pop()
+
+    #     if  stair_0[1] + stair_0_len < stair_1[1] + stair_1_len :
+    #         while stair_0[1] + stair_0_len < stair_1[1] + stair_1_len :
+    #             in_time_0.append(stair_0[1] + 1 + stair_0_len)
+
+
+
+
+    #         stair_0 = dist_dict[0].pop()
+
+
+
+
+    #     persons.remove(position)
