@@ -1,0 +1,51 @@
+import copy
+
+# arr = [[0] * 12] + [ [0]+list(map(lambda x : 0 if x == "#" else 1,input()))+[0] for _ in  range(10)] + [[0] * 12 ]
+arr = [ list(map(lambda x : 0 if x == "#" else 1,input())) for _ in  range(10)]
+
+dr = [-1,1,0,0]
+dc = [0,0,-1,1]
+
+def press(r, c, board):
+    global count
+    board[r][c] = 1 - board[r][c]
+    count += 1
+    for i in range(4):
+        nr = r + dr[i]
+        nc = c + dc[i]
+        if 0<= nr < 10 and 0<= nc < 10 :
+            board[nr][nc] = 1 - board[nr][nc] 
+
+minCnt = 100000
+for mask in range(1<<10) :
+    board = copy.deepcopy(arr)
+    count = 0
+    for i, push in enumerate(f'{mask:010b}') :
+        if int(push):
+            press(0,i,board)
+    for r in range(9):
+        for c in range(10):
+            if board[r][c] == 1:
+                press(r+1,c,board)
+    
+    if not any(board[-1]) :
+        minCnt = min(minCnt, count)
+
+if minCnt == 100000 :
+    minCnt = -1
+print(minCnt)
+
+"""
+#O########
+OOO#######
+#O########
+####OO####
+###O##O###
+####OO####
+##########
+########O#
+#######OOO
+########O#
+
+
+"""
