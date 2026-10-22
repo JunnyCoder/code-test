@@ -19,8 +19,9 @@ for i in range(M * H):
 res = 0
 if len(tomatos) + len(empty) != N * M * H :
     # 상 하 좌 우 ] [차원이동 상 하]
-    dr = [-1, 1, 0, 0, -M, M]
+    dr = [-1, 1, 0, 0, 0, 0]
     dc = [0, 0, -1, 1, 0, 0]
+    dz = [0,0,0,0,1,-1]
 
 
     while tomatos :
